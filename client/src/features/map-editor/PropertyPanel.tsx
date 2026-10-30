@@ -25,7 +25,7 @@ export const PropertyPanel: React.FC = () => {
     : null;
 
   return (
-    <div className="absolute right-4 top-20 z-20 w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/80 p-5 flex flex-col space-y-4 animate-fade-in max-h-[calc(100vh-6rem)] overflow-y-auto">
+    <div className="fixed bottom-16 inset-x-3 z-40 max-h-[55vh] md:max-h-[calc(100vh-6rem)] md:absolute md:top-20 md:right-4 md:bottom-auto md:left-auto md:w-80 bg-white/98 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/90 p-4 md:p-5 flex flex-col space-y-4 animate-fade-in overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div className="flex items-center space-x-2">

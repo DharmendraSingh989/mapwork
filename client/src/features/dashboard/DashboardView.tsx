@@ -146,21 +146,21 @@ export const DashboardView: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="grid grid-cols-3 sm:flex sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={() => setIsMergeModalOpen(true)}
-              className="px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold rounded-xl text-xs transition flex items-center space-x-2 border border-indigo-200"
+              className="px-2.5 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold rounded-xl text-xs transition flex items-center justify-center space-x-1.5 border border-indigo-200"
             >
-              <Layers className="w-4 h-4 text-indigo-600" />
-              <span>Merge Maps</span>
+              <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
+              <span>Merge</span>
             </button>
 
             <button
               onClick={() => setIsRoomModalOpen(true)}
-              className="px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold rounded-xl text-xs transition flex items-center space-x-2 border border-emerald-200"
+              className="px-2.5 sm:px-4 py-2 sm:py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold rounded-xl text-xs transition flex items-center justify-center space-x-1.5 border border-emerald-200"
             >
-              <Users className="w-4 h-4 text-emerald-600" />
-              <span>Live Room</span>
+              <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+              <span>Rooms</span>
             </button>
 
             <button
@@ -170,9 +170,9 @@ export const DashboardView: React.FC = () => {
                 setNewMapTags("");
                 setIsCreateModalOpen(true);
               }}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-blue-500/20 transition flex items-center space-x-2"
+              className="px-2.5 sm:px-4 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-blue-500/20 transition flex items-center justify-center space-x-1.5"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>New Map</span>
             </button>
           </div>

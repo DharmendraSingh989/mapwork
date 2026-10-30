@@ -55,8 +55,113 @@ export const ToolPalette: React.FC = () => {
   };
 
   return (
-    <div className="absolute left-4 top-20 z-20 flex flex-col items-center">
-      <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/80 p-1.5 flex flex-col space-y-1">
+    <>
+      {/* DESKTOP FLOATING PALETTE (Left) */}
+      <div className="hidden md:flex flex-col items-center absolute left-4 top-20 z-20">
+        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/80 p-1.5 flex flex-col space-y-1">
+          {tools.map((tool) => {
+            const isActive = activeTool === tool.id;
+            return (
+              <button
+                key={tool.id}
+                onClick={() => handleToolSelect(tool.id)}
+                title={tool.label}
+                className={`p-2.5 rounded-xl transition flex items-center justify-center relative group ${
+                  isActive
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
+              >
+                {tool.icon}
+                <div className="absolute left-full ml-3 px-2 py-1 bg-slate-900 text-white text-xs font-medium rounded shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition z-50">
+                  {tool.label}
+                </div>
+              </button>
+            );
+          })}
+
+          <div className="my-1 border-t border-slate-200" />
+
+          {/* Style Options Toggle */}
+          <button
+            onClick={() => {
+              setShowStylePopover(!showStylePopover);
+              setShowEmojiPopover(false);
+            }}
+            title="Color & Stroke Options"
+            className={`p-2.5 rounded-xl transition flex items-center justify-center ${
+              showStylePopover ? "bg-slate-200 text-slate-800" : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            <Sliders className="w-5 h-5" />
+          </button>
+
+          {/* Current Active Color Preview Dot */}
+          <div
+            style={{ backgroundColor: activeColor }}
+            className="w-4 h-4 rounded-full border border-white shadow-sm mt-1 mx-auto"
+            title={`Active color: ${activeColor}`}
+          />
+        </div>
+
+        {/* Desktop Popovers */}
+        {showEmojiPopover && (
+          <div className="absolute left-full ml-4 top-12 z-50 animate-fade-in">
+            <EmojiPicker
+              selectedEmoji={activeEmoji}
+              onSelect={(emoji, category) => {
+                setActiveEmoji(emoji);
+                if (category) setActiveCategory(category);
+                setShowEmojiPopover(false);
+              }}
+            />
+          </div>
+        )}
+
+        {showStylePopover && (
+          <div className="absolute left-full ml-4 top-36 z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-64 space-y-4 animate-fade-in">
+            <ColorPicker
+              label="Stroke / Marker Color"
+              value={activeColor}
+              onChange={(color) => setActiveColor(color)}
+            />
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-semibold text-slate-500 uppercase">
+                <span>Stroke Width</span>
+                <span className="text-slate-700">{activeStrokeWidth}px</span>
+              </div>
+              <input
+                type="range"
+                min={1}
+                max={16}
+                value={activeStrokeWidth}
+                onChange={(e) => setActiveStrokeWidth(Number(e.target.value))}
+                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-semibold text-slate-500 uppercase">
+                <span>Opacity</span>
+                <span className="text-slate-700">{Math.round(activeOpacity * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min={0.1}
+                max={1}
+                step={0.05}
+                value={activeOpacity}
+                onChange={(e) => setActiveOpacity(Number(e.target.value))}
+                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MOBILE BOTTOM TOOL DOCK (Phone Thumb Navigation) */}
+      <div className="md:hidden fixed bottom-3 inset-x-2 z-30 flex items-center justify-around bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/90 px-2 py-1.5 overflow-x-auto gap-1 touch-manipulation">
         {tools.map((tool) => {
           const isActive = activeTool === tool.id;
           return (
@@ -64,49 +169,41 @@ export const ToolPalette: React.FC = () => {
               key={tool.id}
               onClick={() => handleToolSelect(tool.id)}
               title={tool.label}
-              className={`p-2.5 rounded-xl transition flex items-center justify-center relative group ${
+              className={`p-2 rounded-xl transition flex items-center justify-center shrink-0 ${
                 isActive
                   ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  : "text-slate-600 hover:text-slate-900 active:bg-slate-100"
               }`}
             >
-              {tool.icon}
-
-              {/* Tooltip on hover */}
-              <div className="absolute left-full ml-3 px-2 py-1 bg-slate-900 text-white text-xs font-medium rounded shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition z-50">
-                {tool.label}
+              <div className="w-5 h-5 flex items-center justify-center">
+                {tool.icon}
               </div>
             </button>
           );
         })}
 
-        <div className="my-1 border-t border-slate-200" />
-
-        {/* Style Options Toggle */}
+        {/* Style Options Button on Mobile */}
         <button
           onClick={() => {
             setShowStylePopover(!showStylePopover);
             setShowEmojiPopover(false);
           }}
-          title="Color & Stroke Options"
-          className={`p-2.5 rounded-xl transition flex items-center justify-center ${
-            showStylePopover ? "bg-slate-200 text-slate-800" : "text-slate-600 hover:bg-slate-100"
+          title="Color & Style"
+          className={`p-2 rounded-xl transition flex items-center justify-center shrink-0 relative ${
+            showStylePopover ? "bg-slate-200 text-slate-800" : "text-slate-600 active:bg-slate-100"
           }`}
         >
           <Sliders className="w-5 h-5" />
+          <span
+            style={{ backgroundColor: activeColor }}
+            className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-white shadow-sm"
+          />
         </button>
-
-        {/* Current Active Color Preview Dot */}
-        <div
-          style={{ backgroundColor: activeColor }}
-          className="w-4 h-4 rounded-full border border-white shadow-sm mt-1 mx-auto"
-          title={`Active color: ${activeColor}`}
-        />
       </div>
 
-      {/* Popovers */}
+      {/* MOBILE POPOVERS (Bottom Sheets) */}
       {showEmojiPopover && (
-        <div className="absolute left-full ml-4 top-12 z-50 animate-fade-in">
+        <div className="md:hidden fixed bottom-16 inset-x-2 max-w-sm mx-auto z-40 bg-white/98 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-2 animate-fade-in max-h-[50vh] overflow-y-auto">
           <EmojiPicker
             selectedEmoji={activeEmoji}
             onSelect={(emoji, category) => {
@@ -119,14 +216,24 @@ export const ToolPalette: React.FC = () => {
       )}
 
       {showStylePopover && (
-        <div className="absolute left-full ml-4 top-36 z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-64 space-y-4 animate-fade-in">
+        <div className="md:hidden fixed bottom-16 inset-x-3 max-w-sm mx-auto z-40 bg-white/98 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-4 space-y-4 animate-fade-in">
+          <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Style Settings</span>
+            <button
+              onClick={() => setShowStylePopover(false)}
+              className="text-slate-400 hover:text-slate-600 text-xs font-semibold px-1"
+            >
+              Done
+            </button>
+          </div>
+
           <ColorPicker
-            label="Stroke / Marker Color"
+            label="Color"
             value={activeColor}
             onChange={(color) => setActiveColor(color)}
           />
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex justify-between text-xs font-semibold text-slate-500 uppercase">
               <span>Stroke Width</span>
               <span className="text-slate-700">{activeStrokeWidth}px</span>
@@ -137,11 +244,11 @@ export const ToolPalette: React.FC = () => {
               max={16}
               value={activeStrokeWidth}
               onChange={(e) => setActiveStrokeWidth(Number(e.target.value))}
-              className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex justify-between text-xs font-semibold text-slate-500 uppercase">
               <span>Opacity</span>
               <span className="text-slate-700">{Math.round(activeOpacity * 100)}%</span>
@@ -153,11 +260,11 @@ export const ToolPalette: React.FC = () => {
               step={0.05}
               value={activeOpacity}
               onChange={(e) => setActiveOpacity(Number(e.target.value))}
-              className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

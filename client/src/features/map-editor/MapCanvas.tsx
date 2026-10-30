@@ -748,19 +748,29 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({ styleUrl, targetCoordinate
     map.on("mousedown", handlePointerDown);
     map.on("mousemove", handlePointerMove);
     map.on("mouseup", handlePointerUp);
+    map.on("touchstart", handlePointerDown);
+    map.on("touchmove", handlePointerMove);
+    map.on("touchend", handlePointerUp);
     map.on("click", handleClick);
 
     return () => {
       map.off("mousedown", handlePointerDown);
       map.off("mousemove", handlePointerMove);
       map.off("mouseup", handlePointerUp);
+      map.off("touchstart", handlePointerDown);
+      map.off("touchmove", handlePointerMove);
+      map.off("touchend", handlePointerUp);
       map.off("click", handleClick);
     };
   }, [handlePointerDown, handlePointerMove, handlePointerUp, handleClick]);
 
   return (
     <div className="relative w-full h-full flex-1 overflow-hidden">
-      <div ref={mapContainerRef} className="w-full h-full" />
+      <div
+        ref={mapContainerRef}
+        className="w-full h-full touch-manipulation"
+        style={{ touchAction: activeTool === "freehand" ? "none" : "auto" }}
+      />
     </div>
   );
 };

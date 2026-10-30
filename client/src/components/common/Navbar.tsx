@@ -32,39 +32,63 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMerge, onOpenRoomModal }) 
         </Link>
 
         {user && (
-          <nav className="hidden md:flex items-center space-x-1">
-            <Link
-              to="/"
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition flex items-center space-x-1.5 ${
-                location.pathname === "/"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <Map className="w-4 h-4" />
-              <span>My Maps</span>
-            </Link>
-
-            {onOpenMerge && (
-              <button
-                onClick={onOpenMerge}
-                className="px-3 py-1.5 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center space-x-1.5"
+          <>
+            <nav className="hidden md:flex items-center space-x-1">
+              <Link
+                to="/"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition flex items-center space-x-1.5 ${
+                  location.pathname === "/"
+                    ? "bg-blue-50 text-blue-700"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
               >
-                <Layers className="w-4 h-4 text-indigo-500" />
-                <span>Merge Maps</span>
-              </button>
-            )}
+                <Map className="w-4 h-4" />
+                <span>My Maps</span>
+              </Link>
 
-            {onOpenRoomModal && (
-              <button
-                onClick={onOpenRoomModal}
-                className="px-3 py-1.5 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center space-x-1.5"
-              >
-                <Users className="w-4 h-4 text-emerald-500" />
-                <span>Collab Rooms</span>
-              </button>
-            )}
-          </nav>
+              {onOpenMerge && (
+                <button
+                  onClick={onOpenMerge}
+                  className="px-3 py-1.5 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center space-x-1.5"
+                >
+                  <Layers className="w-4 h-4 text-indigo-500" />
+                  <span>Merge Maps</span>
+                </button>
+              )}
+
+              {onOpenRoomModal && (
+                <button
+                  onClick={onOpenRoomModal}
+                  className="px-3 py-1.5 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center space-x-1.5"
+                >
+                  <Users className="w-4 h-4 text-emerald-500" />
+                  <span>Collab Rooms</span>
+                </button>
+              )}
+            </nav>
+
+            {/* Mobile quick actions in navbar */}
+            <div className="flex md:hidden items-center space-x-1">
+              {onOpenMerge && (
+                <button
+                  onClick={onOpenMerge}
+                  title="Merge Maps"
+                  className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+                >
+                  <Layers className="w-4 h-4 text-indigo-600" />
+                </button>
+              )}
+              {onOpenRoomModal && (
+                <button
+                  onClick={onOpenRoomModal}
+                  title="Collab Rooms"
+                  className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+                >
+                  <Users className="w-4 h-4 text-emerald-600" />
+                </button>
+              )}
+            </div>
+          </>
         )}
       </div>
 
