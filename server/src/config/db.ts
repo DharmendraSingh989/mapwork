@@ -25,9 +25,13 @@ export async function connectDB(): Promise<void> {
     }
 
     if (!uri) {
+      if (env.NODE_ENV === "production") {
+        throw new Error("MONGODB_URI is required in production.");
+      }
+
       console.log("ℹ️ No MONGODB_URI provided. Starting in-memory MongoDB instance for local demonstration/testing...");
       process.env.MONGOMS_DOWNLOAD_DIR = path.resolve(process.cwd(), ".cache/mongodb-binaries");
-      const { MongoMemoryServer } = await import("mongodb-memory-server");
+      const { MongoMemoryServer } = await import("mongodb-memory-server-core");
       mongod = await MongoMemoryServer.create();
       uri = mongod.getUri();
       isUsingInMemory = true;

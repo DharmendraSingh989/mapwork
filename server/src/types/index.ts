@@ -1,4 +1,4 @@
-import { Request } from "express";
+import type { Request } from "express";
 import mongoose from "mongoose";
 
 export interface AuthenticatedUser {
@@ -9,6 +9,13 @@ export interface AuthenticatedUser {
   role: string;
 }
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: AuthenticatedUser;
+    }
+  }
+}
+
 export interface AuthRequest extends Request {
-  user?: AuthenticatedUser;
 }

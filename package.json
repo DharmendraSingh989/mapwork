@@ -8,6 +8,10 @@
     "server",
     "client"
   ],
+  "packageManager": "npm@11.12.1",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=server\" \"npm run dev --workspace=client\"",
     "dev:server": "npm run dev --workspace=server",
@@ -19,5 +23,8 @@
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "optionalDependencies": {
+    "@esbuild/linux-x64": "0.25.12"
   }
 }

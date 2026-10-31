@@ -1,13 +1,42 @@
-# MapForge — Production Deployment Guide
+# MapForge Production Deployment
 
-This guide details how to deploy MapForge on a Linux VPS (Ubuntu/Debian) with Nginx, PM2, and MongoDB Atlas.
+## Vercel and Render
+
+The repository root is the monorepo root. Use Node.js 24 LTS (selected by `.node-version` and the root `engines` field) and npm 11.12.1 (`packageManager`). Do not set the Vercel Root Directory to `client`; shared workspace packages must be built from the repository root.
+
+### Vercel frontend
+
+- Root Directory: `.` (repository root)
+- Framework Preset: Vite
+- Install Command: `npm ci --include=dev`
+- Build Command: `npm run build --workspace=shared && npm run build --workspace=client`
+- Output Directory: `client/dist`
+- Environment Variable: `VITE_API_URL` = the Render service's public origin, without `/api/v1` (for example, `https://mapforge-api.onrender.com`)
+
+`vercel.json` provides the SPA fallback so client-side routes also load on refresh. `VITE_API_URL` is public browser configuration; never put database credentials or JWT secrets in a `VITE_` variable.
+
+### Render backend
+
+Use the repository root as the service Root Directory. `render.yaml` defines the production build, start command, and `/health` check:
+
+- Build Command: `npm ci --include=dev && npm run build --workspace=shared && npm run build --workspace=server`
+- Start Command: `npm run start --workspace=server`
+- Health Check Path: `/health`
+- Required environment variables: `MONGODB_URI`, `CLIENT_URL`, `JWT_ACCESS_SECRET`, and `JWT_REFRESH_SECRET`
+- `CLIENT_URL` must be the Vercel deployment origin. Render supplies `PORT`; the server binds to `0.0.0.0`.
+
+The JWT secrets should be independent, high-entropy values. `GEOCODING_API_KEY` is optional and is only needed for a provider that requires it. Do not copy `.env` into either deployment or commit it.
+
+## VPS Deployment
+
+The following legacy VPS procedure remains available for self-hosted deployments.
 
 ---
 
 ## 1. Prerequisites
 
 - A Linux server (Ubuntu 22.04 LTS or 24.04 LTS recommended)
-- Node.js 20.x or 22.x LTS and npm
+- Node.js 24.x LTS and npm 11.12.1
 - PM2 process manager (`npm install -g pm2`)
 - Nginx web server
 - Free MongoDB Atlas Cluster (or local MongoDB service)
@@ -42,7 +71,7 @@ MAP_STYLE_URL=https://basemaps.cartocdn.com/gl/positron-gl-style/style.json
 ## 3. Install Dependencies & Build
 
 ```bash
-npm install --ignore-scripts
+npm ci --include=dev
 npm run build
 ```
 
@@ -65,8 +94,8 @@ pm2 startup
 
 Verify backend health:
 ```bash
-curl http://localhost:5000/api/v1/health
-curl http://localhost:5000/api/v1/ready
+curl http://localhost:5000/health
+curl http://localhost:5000/ready
 ```
 
 ---
