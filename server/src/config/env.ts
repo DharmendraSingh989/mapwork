@@ -44,3 +44,13 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+export function getAllowedOrigins(): (string | RegExp)[] {
+  const configured = env.CLIENT_URL.split(",")
+    .map((url) => url.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
+  const defaults = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"];
+  const origins: (string | RegExp)[] = Array.from(new Set([...configured, ...defaults]));
+  origins.push(/^https:\/\/.*\.vercel\.app$/);
+  return origins;
+}

@@ -17,9 +17,6 @@
     "lint": "npm run lint --workspace=server && npm run lint --workspace=client",
     "typecheck": "npm run typecheck --workspace=shared && npm run typecheck --workspace=server && npm run typecheck --workspace=client"
   },
-  "dependencies": {
-    "zod": "^3.24.2"
-  },
   "devDependencies": {
     "concurrently": "^9.1.2"
   }

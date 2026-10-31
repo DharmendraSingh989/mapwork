@@ -37,7 +37,11 @@ export const useRoomStore = create<RoomState>((set, get) => ({
   connectSocket: (token: string) => {
     if (get().socket) return;
 
-    const socket = io("/", {
+    const socketBase = import.meta.env.VITE_API_URL
+      ? (import.meta.env.VITE_API_URL as string).replace(/\/+$/, "")
+      : "/";
+
+    const socket = io(socketBase, {
       auth: { token },
       transports: ["websocket", "polling"],
       autoConnect: true

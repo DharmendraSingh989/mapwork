@@ -2,12 +2,14 @@ import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import { env } from "./config/env.js";
+import { env, getAllowedOrigins } from "./config/env.js";
 import routes from "./routes/index.js";
+import { getHealth, getReadiness } from "./controllers/healthController.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 export function createApp(): Express {
   const app = express();
+  const allowedOrigins = getAllowedOrigins();
 
   // Helmet with customized CSP allowing external map tiles and styles
   app.use(
@@ -20,10 +22,22 @@ export function createApp(): Express {
   // CORS configuration
   app.use(
     cors({
-      origin: [env.CLIENT_URL, "http://localhost:5173", "http://127.0.0.1:5173"],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const isAllowed = allowedOrigins.some((allowed) => {
+          if (allowed instanceof RegExp) return allowed.test(origin);
+          return allowed === origin;
+        });
+        if (isAllowed) return callback(null, true);
+        return callback(new Error(`CORS error: Origin ${origin} not allowed`));
+      },
       credentials: true
     })
   );
+
+  // Direct health and readiness endpoints for cloud platforms (Render, Docker)
+  app.get("/health", getHealth);
+  app.get("/ready", getReadiness);
 
   // Rate Limiting
   const generalLimiter = rateLimit({

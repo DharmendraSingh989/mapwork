@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+.cache/
+*.lock
 
 # Build outputs
 dist/
