@@ -9,13 +9,6 @@ export interface AuthenticatedUser {
   role: string;
 }
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: AuthenticatedUser;
-    }
-  }
-}
-
 export interface AuthRequest extends Request {
+  user?: AuthenticatedUser;
 }
